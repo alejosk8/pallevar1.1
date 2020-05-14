@@ -1,0 +1,29 @@
+version: '2'
+services:
+  db:
+    container_name: epmapat_db
+    image: postgres:10
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - epmapat-db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - "$port_db:5432"
+  web:
+    container_name: epmapat_odoo
+    image: epmapat_odoo:13
+    build: ./
+    depends_on:
+      - db
+    ports:
+      - "$port:8069"
+      - "$chat_port:8072"
+    volumes:
+      - epmapat-web-data:/var/lib/odoo
+      - ./docker:/etc/odoo/
+      - ./addons:/mnt/extra-addons
+volumes:
+    epmapat-web-data:
+    epmapat-db-data:
